@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Home</title>
+       <link rel="stylesheet" href="/css/home.css">
+       <link rel="stylesheet" href="css/global.css">
+   </head>
+   <body>
+       <header>
+           <nav>
+               <h1>The Weather</h1>
+               <img src="/images/cloud_.png" alt="This represents a cloud">
+               <a class="menu-option" data-page="home" id="homeLink">Home</a>
+               <a class="menu-option" data-page="registration" id="registrationLink">Registration</a>
+               <a class="menu-option" data-page="profile">Profile</a>
+               <a class="menu-option" data-page="login" id="logIn">Login</a>
+           </nav>
+       </header>
+       
+       <!-- Search bar placed in a separate div -->
+       <div id="searchContainer">
+           <input 
+               type="text" 
+               id="citySearch" 
+               placeholder="Search for a city..." 
+               autocomplete="off" 
+           />
+           <button id="searchButton">Search</button>
+       </div>
+       
+       <div id="weatherContainer">
+           <h2 id="cityName">Welcome or Welcome Back <img class="location1" src="/images/location_4249561.png"></h2>
+           <div class="table1">
+               <table id="weatherTable">
+                   <!-- Weather data will be dynamically updated here -->
+               </table>
+           </div>
+       </div>
+       
+       <script src="js/home.js"></script>
+       <script src="js/global.js"></script>
+   </body>
+</html>

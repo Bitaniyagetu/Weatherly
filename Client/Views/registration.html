@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <title>Home</title>
+       <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+       <link rel="stylesheet" href="/css/registration.css">
+       <link rel="stylesheet" href="/css/global.css">
+   </head>
+
+   <body>
+       <header>
+           <nav>
+               <h1>The Weather</h1>
+               <img src="/images/cloud_.png" alt="This represents of a cloud">
+               <a class="menu-option" data-page="home" id="homeLink">Home</a>
+               <a class="menu-option" data-page="registration" id="registrationLink">Registration</a>
+               <a class="menu-option" data-page="login" id="logIn">Login</a>
+           </nav>
+       </header>
+       <div class="overallContainer">
+            <div class="container2" >
+                <form id="registrationForm">
+                    <div class="containerLogin">
+                        <div class="formLogin">
+                            <span class="title">Registration</span>
+                            <img class="image_1" src="/images/cloud_.png" height="30" alt="This represents of a cloud">
+                
+                            <!-- Input Fields -->
+                            <div class="input-field">
+                                <input id="firstName" type="text" placeholder="Enter First Name" required>
+                                <i class="uil uil-user"></i>
+                            </div>
+                
+                            <div class="input-field">
+                                <input id="lastName" type="text" placeholder="Enter Last Name" required>
+                                <i class="uil uil-user"></i>
+                            </div>
+                
+                            <div class="input-field">
+                                <h5>Date Of Birth</h5>
+                                <input id="birthD" type="date" required>
+                                <i class=""></i>
+                            </div>
+                
+                            <div class="input-field">
+                                <input type="tel" id="phone" placeholder="Enter Phone Number" name="phone" pattern="[0-9]{3}[0-9]{3}[0-9]{4}">
+                                <i class="uil uil-phone"></i>
+                            </div>
+                
+                            <div class="input-field">
+                                <input id="email" type="email" placeholder="Enter your email" required>
+                                <i class="uil uil-envelope icon"></i>
+                            </div>
+                
+                            <div class="input-field">
+                                <input id="password" type="password" placeholder="Enter your password" required>
+                                <i class="uil uil-lock-alt"></i>
+                            </div>
+                
+                            <div class="input-field button">
+                                <!-- Only one submit button -->
+                                <button type="submit" class="input-field c" id="submitButton">Submit</button>
+                            </div>
+                
+                            <!-- Other Buttons -->
+                            <button type="reset" class="input-field b">Reset</button>
+                            <button type="button" id="backButton" class="input-field b">Back</button>
+                        </div>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+        
+       <script src="/js/registration.js"></script>
+       <script src="/js/global.js"></script>
+   </body>
+</html>

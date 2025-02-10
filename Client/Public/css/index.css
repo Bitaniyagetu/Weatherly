@@ -1,0 +1,73 @@
+.overallContainer {
+    height: 700px;
+    background-color: #00BFFF;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: space-between;
+ }
+ 
+ .flexbox-item {
+    width: 200px;
+    margin: 10px;
+ 
+ }
+ 
+ .flexbox-item-1 {
+    min-height: 100px;
+ }
+ 
+ .flexbox-item-2 {
+    min-height: 200px;
+ }
+ 
+ .flexbox-item-3 {
+    min-height: 300px;
+    text-align: center;
+    padding-top: 90%;
+ }
+ 
+ 
+ 
+ button {
+    background-color: #FFE87C;
+    animation-name: flickerAnimation;
+    animation-duration: 2s;
+    animation-iteration-count: 100;
+ 
+ }
+ 
+ 
+ @keyframes flickerAnimation {
+    0% {
+        opacity: 1;
+    }
+ 
+    50% {
+        opacity: 0;
+    }
+ 
+    100% {
+        opacity: 1;
+    }
+ }
+img{
+    height:200px;
+    width:200px;
+}
+
+
+
+
+.animation {
+    transition: opacity 0.5s ease-in-out;
+    opacity: 1;
+}
+
+.flexbox-item-3 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <title>Login</title>
+       <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+       <link rel="stylesheet" href="/css/login.css">
+       <link rel="stylesheet" href="/css/global.css">
+   </head>
+
+   <body>
+       <header>
+           <nav>
+               <h1>The Weather</h1>
+               <img src="/images/cloud_.png" alt="This represents a cloud">
+               <a class="menu-option" data-page="home" id="homeLink">Home</a>
+               <a class="menu-option" data-page="registration" id="registrationLink">Registration</a>
+               <a class="menu-option" data-page="login" id="logIn">Login</a>
+           </nav>
+       </header>
+       <div class="overallContainer">
+            <div class="container2">
+                <form>
+                    <div class="containerLogin">
+                        <div class="formLogin">
+                            <span class="title">Login</span>
+                            <img class="image_1" src="/images/cloud_.png" height="30" alt="This represents a cloud">
+
+                            <div class="input-field">
+                                <input id="email" type="email" placeholder="Enter your email" required>
+                                <i class="uil uil-envelope icon"></i>
+                            </div>
+
+                            <div class="input-field">
+                                <input id="password" type="password" placeholder="Enter your password" required>
+                                <i class="uil uil-lock-alt"></i>
+                            </div>
+
+                            <div class="input-field button">
+                                <input type="submit" value="Login" class="input-field c" id="loginButton">
+                            </div>
+
+                            <p class="message">
+                                Don't have an account? 
+                                <a href="/registration.html" id="registerLink">Register</a>
+                            </p>
+
+                            <button class="input-field b" id="backButton">Back</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+       <script src="/js/login.js"></script>
+       <script src="/js/global.js"></script>
+   </body>
+</html>

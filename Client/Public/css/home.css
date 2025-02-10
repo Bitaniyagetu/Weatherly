@@ -1,0 +1,99 @@
+body {
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    background: whitesmoke;
+ }
+ 
+ header {
+    background-color: #00BFFF;
+    padding: 10px;
+ }
+ 
+ nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    text-align: center;
+    align-items: center;
+ }
+ 
+ nav a {
+    text-decoration: none;
+    color: aliceblue;
+    cursor: pointer;
+ }
+ img{
+    height:30px;
+ }
+ nav a.active {
+    font-weight: bold; 
+    color: yellow; 
+    text-decoration: underline; 
+}
+.menu-option.active {
+    font-weight: bold;
+    color: #FFE87C; 
+}
+
+
+
+.table1 img {
+    width: 20px;
+ }
+ 
+ .table1 table {
+    display: flex;
+    justify-content: center;
+    padding-top: 15%;
+    text-align: center;
+    font-size: 35px;
+ 
+ }
+ 
+ .table1 tr {
+    background: rgba(0, 191, 255, .4);
+ 
+ }
+ 
+ 
+ .location1 {
+    width: 25px;
+ }
+ 
+ h2 {
+    display: flex;
+    padding-top: 5%;
+    justify-content: center;
+ }
+
+
+
+
+
+
+ #searchContainer {
+   text-align: center;
+   margin: 20px 0;
+}
+
+#citySearch {
+   padding: 10px;
+   width: 300px;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+}
+
+#searchButton {
+   padding: 10px 20px;
+   margin-left: 10px;
+   background-color: #007BFF;
+   color: #fff;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+}
+
+#searchButton:hover {
+   background-color: #0056b3;
+}

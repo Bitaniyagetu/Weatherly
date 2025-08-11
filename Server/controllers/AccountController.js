@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const connection = require('../models/database'); // Import the db connection
 
 exports.addUser = async (req, res) => {

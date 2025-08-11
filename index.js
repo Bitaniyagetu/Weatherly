@@ -1,52 +1,51 @@
+// index.js (server entry)
 const express = require('express');
-const path = require('path'); 
-const app = express();
-const axios = require('axios');
-const bodyparser = require('body-parser');
+const path = require('path');
+const axios = require('axios'); // keep if your controllers use it
 
 const mainController = require('./Server/controllers/mainController');
 const accountController = require('./Server/controllers/AccountController');
 
-app.use(express.static(path.join(__dirname, 'Client/public'))); 
-app.use(bodyparser.json());
+const app = express();
 
+// ---- Paths (MATCH folder case exactly) ----
+const CLIENT_DIR = path.join(__dirname, 'Client');
+const PUBLIC_DIR = path.join(CLIENT_DIR, 'Public'); // <— capital P
+const VIEWS_DIR  = path.join(CLIENT_DIR, 'Views');  // <— capital V
+
+// ---- Middleware ----
+app.use(express.json());                         // replaces body-parser.json()
+app.use(express.urlencoded({ extended: true })); // if you post forms
+app.use(express.static(PUBLIC_DIR));             // serves /css, /js, /images, etc.
+
+// ---- Page routes ----
+app.get('/',        (_req, res) => res.sendFile(path.join(VIEWS_DIR, 'index.html')));
+app.get('/home',    (_req, res) => res.sendFile(path.join(VIEWS_DIR, 'home.html')));
+app.get('/login',   (_req, res) => res.sendFile(path.join(VIEWS_DIR, 'login.html')));
+app.get('/profile', (_req, res) => res.sendFile(path.join(VIEWS_DIR, 'profile.html')));
+app.get('/registration', (_req, res) => res.sendFile(path.join(VIEWS_DIR, 'registration.html')));
+
+// ---- API routes ----
+app.get('/api/weather/:city', mainController.getWeatherData);
+app.get('/api/data/:city/:appid', mainController.getWeatherData);
+
+app.post('/api/user', accountController.getAllUsers);
+app.patch('/api/user/:id', accountController.updateUser);
+app.delete('/api/user/:id', accountController.deleteUser);
+
+// ---- 404 (optional) ----
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(VIEWS_DIR, 'index.html'));
+});
+
+// ---- Error handler (optional but helpful) ----
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Server error' });
+});
+
+// ---- Start ----
 const port = process.env.PORT || 3000;
-
-// Routes
-app.get('/', function (req, res) {
-    res.sendFile('index.html', { root: path.join(__dirname, 'Client/views') });
-});
-
-app.get('/home', function (req, res) {
-    res.sendFile('home.html', { root: path.join(__dirname, 'Client/views') }); 
-});
-
-app.get('/registration', function (req, res) {
-    res.sendFile('registration.html', { root: path.join(__dirname, 'Client/views') }); 
-});
-
-app.get('/profile', function (req, res) {
-    res.sendFile('profile.html', { root: path.join(__dirname, 'Client/views') }); 
-});
-
-app.get('/login', function(req, res){
-    res.sendFile('login.html', { root: path.join(__dirname, 'Client/views') });
-});
-
-// API routes
-app.route('/api/weather/:city')
-    .get(mainController.getWeatherData);
-
-app.route('/api/data/:city/:appid')
-    .get(mainController.getWeatherData);
-
-app.route('/api/user')
-    .post(accountController.getAllUsers);
-
-app.route('/api/user/:id')
-    .patch(accountController.updateUser)
-    .delete(accountController.deleteUser);
-
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+  console.log(`Server running http://localhost:${port}`);
 });

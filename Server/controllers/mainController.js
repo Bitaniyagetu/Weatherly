@@ -1,40 +1,119 @@
-//import axios from 'axios';
-//import dotenv from 'dotenv';
-
+// Server/controllers/mainController.js
 const axios = require('axios');
-require('dotenv').config()
+require('dotenv').config();
 
+const API_KEY = process.env.OPENWEATHER;
+if (!API_KEY) {
+  console.warn('[weather] OPENWEATHER key missing in .env');
+}
 
+// --- tiny in-memory cache (5 minutes) ---
+const cache = new Map(); // key -> { data, expires }
+const setCache = (key, data, ttlMs = 5 * 60 * 1000) =>
+  cache.set(key, { data, expires: Date.now() + ttlMs });
+const getCache = (key) => {
+  const hit = cache.get(key);
+  if (hit && hit.expires > Date.now()) return hit.data;
+  if (hit) cache.delete(key);
+  return null;
+};
 
-const apikey = process.env.OPENWEATHER;
-console.log(apikey)
-
+// ============= CURRENT WEATHER =============
 exports.getWeatherData = async (req, res) => {
-    const city = req.params.city;
+  const cityRaw = req.params.city;
+  const city = (cityRaw || '').trim();
+  if (!city) return res.status(400).json({ error: 'City is required' });
+  if (!API_KEY) return res.status(500).json({ error: 'Server missing API key' });
 
-    if (!city) {
-        return res.status(400).json({ error: "City is required" });
+  const cacheKey = `current:${city.toLowerCase()}`;
+  const cached = getCache(cacheKey);
+  if (cached) return res.json(cached);
+
+  try {
+    const { data } = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
+      params: { q: city, units: 'metric', appid: API_KEY },
+      timeout: 10000
+    });
+
+    setCache(cacheKey, data);
+    res.json(data);
+  } catch (error) {
+    handleOWMError(error, res);
+  }
+};
+
+// ============= 5-DAY FORECAST (condensed) =============
+exports.getForecast = async (req, res) => {
+  const cityRaw = req.params.city;
+  const city = (cityRaw || '').trim();
+  if (!city) return res.status(400).json({ error: 'City is required' });
+  if (!API_KEY) return res.status(500).json({ error: 'Server missing API key' });
+
+  const cacheKey = `forecast:${city.toLowerCase()}`;
+  const cached = getCache(cacheKey);
+  if (cached) return res.json(cached);
+
+  try {
+    // OpenWeather /forecast = 5 days in 3-hour steps
+    const { data } = await axios.get('https://api.openweathermap.org/data/2.5/forecast', {
+      params: { q: city, units: 'metric', appid: API_KEY },
+      timeout: 10000
+    });
+
+    // Group by date, compute min/max, pick the midday (12:00) or closest item for icon/desc
+    const byDate = {};
+    for (const entry of data.list) {
+      const [date, time] = entry.dt_txt.split(' ');
+      byDate[date] = byDate[date] || [];
+      byDate[date].push({ ...entry, _time: time });
     }
 
-    try {
-        const response = await axios.get(
-            `https://api.openweathermap.org/data/2.5/weather`,
-            {
-                params: {
-                    q: city,
-                    units: 'metric',
-                    appid: "7a3e4886ec13f53f8a39bde88631a28e",
-                },
-            }
-        );
-        res.json(response.data); // Send weather data as JSON
-    } catch (error) {
-        if (error.response) {
-            res.status(error.response.status).json({ error: error.response.data.message });
-        } else if (error.request) {
-            res.status(500).json({ error: "No response from the weather service" });
-        } else {
-            res.status(500).json({ error: error.message });
+    const days = Object.keys(byDate)
+      .slice(0, 5) // first 5 calendar days
+      .map((date) => {
+        const items = byDate[date];
+        let min = Infinity, max = -Infinity;
+        let chosen = items[0];
+
+        for (const it of items) {
+          min = Math.min(min, it.main.temp_min);
+          max = Math.max(max, it.main.temp_max);
+          // prefer noon-ish for a representative icon/desc
+          if (it._time.startsWith('12:00:00')) chosen = it;
         }
-    }
+
+        const w = chosen.weather?.[0] || {};
+        return {
+          date, // YYYY-MM-DD
+          min: Math.round(min),
+          max: Math.round(max),
+          icon: w.icon || '01d',
+          description: w.description || '',
+        };
+      });
+
+    const payload = {
+      city: data.city?.name || city,
+      country: data.city?.country || '',
+      days
+    };
+
+    setCache(cacheKey, payload);
+    res.json(payload);
+  } catch (error) {
+    handleOWMError(error, res);
+  }
+};
+
+// ============= helpers =============
+function handleOWMError(error, res) {
+  if (error.response) {
+    const code = error.response.status || 500;
+    const msg = error.response.data?.message || 'Upstream error';
+    return res.status(code).json({ error: msg });
+  }
+  if (error.request) {
+    return res.status(502).json({ error: 'No response from weather service' });
+  }
+  return res.status(500).json({ error: error.message || 'Server error' });
 }

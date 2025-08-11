@@ -1,45 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-       <meta charset="UTF-8">
-       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <title>Home</title>
-       <link rel="stylesheet" href="/css/home.css">
-       <link rel="stylesheet" href="css/global.css">
-   </head>
-   <body>
-       <header>
-           <nav>
-               <h1>The Weather</h1>
-               <img src="/images/cloud_.png" alt="This represents a cloud">
-               <a class="menu-option" data-page="home" id="homeLink">Home</a>
-               <a class="menu-option" data-page="registration" id="registrationLink">Registration</a>
-               <a class="menu-option" data-page="profile">Profile</a>
-               <a class="menu-option" data-page="login" id="logIn">Login</a>
-           </nav>
-       </header>
-       
-       <!-- Search bar placed in a separate div -->
-       <div id="searchContainer">
-           <input 
-               type="text" 
-               id="citySearch" 
-               placeholder="Search for a city..." 
-               autocomplete="off" 
-           />
-           <button id="searchButton">Search</button>
-       </div>
-       
-       <div id="weatherContainer">
-           <h2 id="cityName">Welcome or Welcome Back <img class="location1" src="/images/location_4249561.png"></h2>
-           <div class="table1">
-               <table id="weatherTable">
-                   <!-- Weather data will be dynamically updated here -->
-               </table>
-           </div>
-       </div>
-       
-       <script src="js/home.js"></script>
-       <script src="js/global.js"></script>
-   </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home</title>
+
+  <!-- CSS (note the leading slashes because /Public is the static root) -->
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/home.css" />
+</head>
+<body>
+  <header>
+    <nav>
+      <h1>The Weather</h1>
+      <img src="/images/cloud_.png" alt="Cloud icon" />
+      <a class="menu-option" data-page="home" id="homeLink" href="/home">Home</a>
+      <a class="menu-option" data-page="registration" id="registrationLink" href="/registration">Registration</a>
+      <a class="menu-option" data-page="profile" href="/profile">Profile</a>
+      <a class="menu-option" data-page="login" id="logIn" href="/login">Login</a>
+    </nav>
+  </header>
+
+  <!-- Search -->
+  <div id="searchContainer">
+    <input
+      type="text"
+      id="citySearch"
+      placeholder="Search for a city..."
+      autocomplete="off"
+      aria-label="City name"
+    />
+    <button id="searchButton" aria-label="Search city">Search</button>
+  </div>
+
+  <!-- Welcome state (hidden once we have results) -->
+  <h2 id="welcomeText">Welcome or Welcome Back
+    <img class="location1" src="/images/location_4249561.png" alt="Location pin" />
+  </h2>
+
+  <!-- Weather card -->
+  <section class="weather-card" id="weatherCard" hidden>
+    <div class="title">
+      <span id="cityName">City</span>
+      <span id="updatedTime" class="small-muted" style="margin-left:auto;"></span>
+    </div>
+
+    <div class="weather-summary">
+      <div class="big-temp" id="bigTemp">--°</div>
+      <div class="small-muted" id="summaryText">—</div>
+    </div>
+
+    <table id="weatherTable"></table>
+
+    <!-- 5-day forecast row (we’ll fill from JS) -->
+    <div class="forecast" id="forecastRow"></div>
+  </section>
+
+  <!-- JS (use leading slashes) -->
+  <script src="/js/global.js"></script>
+  <script src="/js/home.js"></script>
+</body>
 </html>

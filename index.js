@@ -16,7 +16,7 @@ const VIEWS_DIR  = path.join(CLIENT_DIR, 'Views');  // capital V
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static assets (cache lightly so new CSS/JS show up; bump if you want)
+// Static assets (cache lightly so new CSS/JS show up)
 app.use(express.static(PUBLIC_DIR, { maxAge: '1h', etag: true }));
 
 // ---- Page routes ----
@@ -26,14 +26,16 @@ app.get('/login', (_req, res) => res.sendFile(path.join(VIEWS_DIR, 'login.html')
 app.get('/profile', (_req, res) => res.sendFile(path.join(VIEWS_DIR, 'profile.html')));
 app.get('/registration', (_req, res) => res.sendFile(path.join(VIEWS_DIR, 'registration.html')));
 
-// ---- API routes ----
-app.get('/api/weather/:city',   mainController.getWeatherData);
-app.get('/api/forecast/:city',  mainController.getForecast); // new 5-day
-// (Old /api/data/:city/:appid is redundant—safe to remove.)
+// ---- Weather API ----
+app.get('/api/weather/:city',  mainController.getWeatherData);
+app.get('/api/forecast/:city', mainController.getForecast);
 
-app.post('/api/user',           accountController.getAllUsers);
-app.patch('/api/user/:id',      accountController.updateUser);
-app.delete('/api/user/:id',     accountController.deleteUser);
+// ---- Users API ----
+app.post('/api/user',          accountController.addUser);       // create
+app.get('/api/user',           accountController.getAllUsers);   // list
+app.get('/api/user/:id',       accountController.getUserById);   // read
+app.patch('/api/user/:id',     accountController.updateUser);    // update
+app.delete('/api/user/:id',    accountController.deleteUser);    // delete
 
 // ---- 404 fallback ----
 app.use((_req, res) => res.status(404).sendFile(path.join(VIEWS_DIR, 'index.html')));

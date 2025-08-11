@@ -1,63 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home</title>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="/css/registration.css">
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        /* Layout for form + Earth side by side */
+        .registration-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+        }
 
-  <!-- CSS (note the leading slashes because /Public is the static root) -->
-  <link rel="stylesheet" href="/css/global.css" />
-  <link rel="stylesheet" href="/css/home.css" />
+        #earthContainer {
+            width: 300px;
+            height: 300px;
+        }
+
+        @media (max-width: 900px) {
+            .registration-wrapper {
+                flex-direction: column;
+            }
+            #earthContainer {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <header>
-    <nav>
-      <h1>The Weather</h1>
-      <img src="/images/cloud_.png" alt="Cloud icon" />
-      <a class="menu-option" data-page="home" id="homeLink" href="/home">Home</a>
-      <a class="menu-option" data-page="registration" id="registrationLink" href="/registration">Registration</a>
-      <a class="menu-option" data-page="profile" href="/profile">Profile</a>
-      <a class="menu-option" data-page="login" id="logIn" href="/login">Login</a>
-    </nav>
-  </header>
+    <header>
+        <nav>
+            <h1>The Weather</h1>
+            <img src="/images/cloud_.png" alt="This represents of a cloud">
+            <a class="menu-option" data-page="home" id="homeLink">Home</a>
+            <a class="menu-option" data-page="registration" id="registrationLink">Registration</a>
+            <a class="menu-option" data-page="login" id="logIn">Login</a>
+        </nav>
+    </header>
 
-  <!-- Search -->
-  <div id="searchContainer">
-    <input
-      type="text"
-      id="citySearch"
-      placeholder="Search for a city..."
-      autocomplete="off"
-      aria-label="City name"
-    />
-    <button id="searchButton" aria-label="Search city">Search</button>
-  </div>
+    <div class="overallContainer">
+        <div class="registration-wrapper">
+            <!-- Registration Form -->
+            <div class="container2">
+                <form id="registrationForm">
+                    <div class="containerLogin">
+                        <div class="formLogin">
+                            <span class="title">Registration</span>
+                            <img class="image_1" src="/images/cloud_.png" height="30" alt="This represents of a cloud">
+                
+                            <!-- Input Fields -->
+                            <div class="input-field">
+                                <input id="firstName" type="text" placeholder="Enter First Name" required>
+                                <i class="uil uil-user"></i>
+                            </div>
+                
+                            <div class="input-field">
+                                <input id="lastName" type="text" placeholder="Enter Last Name" required>
+                                <i class="uil uil-user"></i>
+                            </div>
+                
+                            <div class="input-field">
+                                <h5>Date Of Birth</h5>
+                                <input id="birthD" type="date" required>
+                            </div>
+                
+                            <div class="input-field">
+                                <input type="tel" id="phone" placeholder="Enter Phone Number" pattern="[0-9]{3}[0-9]{3}[0-9]{4}">
+                                <i class="uil uil-phone"></i>
+                            </div>
+                
+                            <div class="input-field">
+                                <input id="email" type="email" placeholder="Enter your email" required>
+                                <i class="uil uil-envelope icon"></i>
+                            </div>
+                
+                            <div class="input-field">
+                                <input id="password" type="password" placeholder="Enter your password" required>
+                                <i class="uil uil-lock-alt"></i>
+                            </div>
+                
+                            <div class="input-field button">
+                                <button type="submit" class="input-field c" id="submitButton">Submit</button>
+                            </div>
+                
+                            <button type="reset" class="input-field b">Reset</button>
+                            <button type="button" id="backButton" class="input-field b">Back</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
-  <!-- Welcome state (hidden once we have results) -->
-  <h2 id="welcomeText">Welcome or Welcome Back
-    <img class="location1" src="/images/location_4249561.png" alt="Location pin" />
-  </h2>
-
-  <!-- Weather card -->
-  <section class="weather-card" id="weatherCard" hidden>
-    <div class="title">
-      <span id="cityName">City</span>
-      <span id="updatedTime" class="small-muted" style="margin-left:auto;"></span>
+            <!-- Earth Container -->
+            <div id="earthContainer"></div>
+        </div>
     </div>
 
-    <div class="weather-summary">
-      <div class="big-temp" id="bigTemp">--°</div>
-      <div class="small-muted" id="summaryText">—</div>
-    </div>
-
-    <table id="weatherTable"></table>
-
-    <!-- 5-day forecast row (we’ll fill from JS) -->
-    <div class="forecast" id="forecastRow"></div>
-  </section>
-
-  <!-- JS (use leading slashes) -->
-  <script src="/js/global.js"></script>
-  <script src="/js/home.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+    <script src="/js/registration.js"></script>
+    <script src="/js/global.js"></script>
 </body>
 </html>

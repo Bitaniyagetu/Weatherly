@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const citySearch = document.getElementById('citySearch');
+    const citySearch   = document.getElementById('citySearch');
     const searchButton = document.getElementById('searchButton');
   
     // New elements from the upgraded HTML
@@ -12,36 +12,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const weatherTable  = document.getElementById('weatherTable');
     const forecastRow   = document.getElementById('forecastRow');
   
-    async function fetchWeatherData(city) {
+    // Units toggle
+    const unitsMetric   = document.getElementById('unitsMetric');
+    const unitsImperial = document.getElementById('unitsImperial');
+  
+    function getUnits() {
+      const saved = localStorage.getItem('units');
+      return saved === 'imperial' ? 'imperial' : 'metric';
+    }
+    function setUnits(u) {
+      const units = (u === 'imperial') ? 'imperial' : 'metric';
+      localStorage.setItem('units', units);
+      if (unitsMetric) unitsMetric.checked = units === 'metric';
+      if (unitsImperial) unitsImperial.checked = units === 'imperial';
+      return units;
+    }
+    function unitSymbol(units) { return units === 'imperial' ? '°F' : '°C'; }
+    function windLabel(units)  { return units === 'imperial' ? 'mph' : 'm/s'; }
+  
+    // init units UI
+    setUnits(getUnits());
+  
+    function setLoading(on) {
+      if (!searchButton) return;
+      searchButton.disabled = on;
+      searchButton.textContent = on ? 'Loading…' : 'Search';
+    }
+  
+    async function fetchWeatherData(cityRaw) {
+      const city = (cityRaw || '').replace(/\s+/g, ' ').trim();
+      const units = getUnits();
+      if (!city) { alert('Please enter a city name.'); return; }
       try {
-        const res = await fetch(`/api/weather/${encodeURIComponent(city)}`);
-        if (!res.ok) throw new Error('City not found');
+        setLoading(true);
+        if (forecastRow) forecastRow.innerHTML = '';
+  
+        const res = await fetch(`/api/weather/${encodeURIComponent(city)}?units=${units}`);
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({}));
+          throw new Error(j.error || 'City not found');
+        }
         const data = await res.json();
-        updateWeatherUI(data, city);
+        updateWeatherUI(data, city, units);
   
-        // also fetch forecast
-        fetchForecast(city);
-  
+        // also fetch forecast (don’t block UI)
+        fetchForecast(city, units).catch(() => {});
         localStorage.setItem('lastCity', city);
       } catch (err) {
         console.error(err);
-        alert('Could not fetch weather data. Try another city.');
+        alert(err.message || 'Could not fetch weather data. Try another city.');
+      } finally {
+        setLoading(false);
       }
     }
   
-    async function fetchForecast(city) {
-      try {
-        const res = await fetch(`/api/forecast/${encodeURIComponent(city)}`);
-        if (!res.ok) throw new Error('Forecast not available');
-        const payload = await res.json();
-        renderForecast(payload.days || []);
-      } catch (e) {
-        console.warn('Forecast fetch failed:', e);
-        if (forecastRow) forecastRow.innerHTML = '';
+    async function fetchForecast(city, units) {
+      const res = await fetch(`/api/forecast/${encodeURIComponent(city)}?units=${units}`);
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || 'Forecast not available');
       }
+      const payload = await res.json();
+      renderForecast(payload.days || [], units);
     }
   
-    function updateWeatherUI(weatherData, city) {
+    function updateWeatherUI(weatherData, city, units) {
       // show card / hide welcome
       if (weatherCard) weatherCard.hidden = false;
       if (welcomeText) welcomeText.style.display = 'none';
@@ -50,17 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const desc = weather?.[0]?.description || '';
       const mainGroup = weather?.[0]?.main || '';
       const temp = Math.round(main.temp);
+      const sym = unitSymbol(units);
   
-      cityNameEl.textContent = name || city;
-      bigTempEl.textContent = `${temp}°`;
+      cityNameEl.textContent    = name || city;
+      bigTempEl.textContent     = `${temp}${sym}`;
       summaryTextEl.textContent = desc;
       updatedTimeEl.textContent = `Updated ${new Date().toLocaleString()}`;
   
       weatherTable.innerHTML = `
-        <tr><td>Temperature:</td><td>${main.temp} °C</td></tr>
-        <tr><td>Feels Like:</td><td>${main.feels_like} °C</td></tr>
+        <tr><td>Temperature:</td><td>${main.temp} ${sym}</td></tr>
+        <tr><td>Feels Like:</td><td>${main.feels_like} ${sym}</td></tr>
         <tr><td>Humidity:</td><td>${main.humidity}%</td></tr>
-        <tr><td>Wind Speed:</td><td>${wind.speed} m/s</td></tr>
+        <tr><td>Wind Speed:</td><td>${wind.speed} ${windLabel(units)}</td></tr>
         <tr><td>Cloudiness:</td><td>${clouds.all}%</td></tr>
         <tr><td>Description:</td><td>${desc}</td></tr>
       `;
@@ -68,18 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
       setWeatherTheme(mainGroup, weather?.[0]?.id);
     }
   
-    function renderForecast(days) {
+    function renderForecast(days, units) {
       if (!forecastRow) return;
       if (!Array.isArray(days) || days.length === 0) {
         forecastRow.innerHTML = '';
         return;
       }
-  
+      const sym = unitSymbol(units);
       const fmtDay = (iso) => {
         const d = new Date(iso + 'T12:00:00');
         return d.toLocaleDateString(undefined, { weekday: 'short' });
       };
-  
       forecastRow.innerHTML = days
         .slice(0, 5)
         .map(d => `
@@ -87,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="label">${fmtDay(d.date)}</div>
             <img alt="${d.description}" width="48" height="48"
                  src="https://openweathermap.org/img/wn/${d.icon}@2x.png"/>
-            <div class="range">${d.max}° / ${d.min}°</div>
+            <div class="range">${d.max}${sym} / ${d.min}${sym}</div>
             <div class="small-muted">${d.description}</div>
           </div>
         `)
@@ -110,13 +145,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     // search handlers
-    searchButton.addEventListener('click', () => {
-      const city = citySearch.value.trim();
-      if (city) fetchWeatherData(city);
-      else alert('Please enter a city name.');
-    });
-    citySearch.addEventListener('keypress', e => {
-      if (e.key === 'Enter') searchButton.click();
+    searchButton.addEventListener('click', () => fetchWeatherData(citySearch.value));
+    citySearch.addEventListener('keypress', e => { if (e.key === 'Enter') fetchWeatherData(citySearch.value); });
+  
+    // units change → refetch current city (if we have one)
+    function currentCity() {
+      const txt = (cityNameEl?.textContent || '').trim();
+      // avoid “City” placeholder triggering refetch
+      if (!txt || txt.toLowerCase() === 'city') return null;
+      return txt;
+    }
+    [unitsMetric, unitsImperial].forEach(el => {
+      if (!el) return;
+      el.addEventListener('change', () => {
+        const u = setUnits(el.value);
+        const c = currentCity() || localStorage.getItem('lastCity') || citySearch.value.trim();
+        if (c) fetchWeatherData(c);
+      });
     });
   
     // initial load

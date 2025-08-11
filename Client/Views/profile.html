@@ -7,6 +7,52 @@
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/profile.css">
 </head>
+<style>
+    /* Fixed Header for All Pages */
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background-color: #fff; /* Match site theme */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    body {
+        padding-top: 80px; /* Prevent overlap */
+    }
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 10px 20px;
+    }
+    nav img {
+        height: 30px;
+    }
+    nav a {
+        text-decoration: none;
+        color: inherit;
+        font-weight: 500;
+    }
+    nav a:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+
+<body>
+<!-- Shared Fixed Header -->
+<header>
+    <nav>
+        <h1>The Weather</h1>
+        <img src="/images/cloud_.png" alt="Cloud icon" />
+        <a class="menu-option" data-page="home" href="/home">Home</a>
+        <a class="menu-option" data-page="registration" href="/registration">Registration</a>
+        <a class="menu-option" data-page="profile" href="/profile">Profile</a>
+        <a class="menu-option" data-page="login" href="/login">Login</a>
+    </nav>
+</header>
 <body>
     <header>
         <nav>

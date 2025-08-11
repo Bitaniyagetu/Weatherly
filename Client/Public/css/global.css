@@ -103,4 +103,21 @@
   ::-webkit-scrollbar-track {
     background: transparent;
   }
+
+
+  body.dark-mode {
+    background: #121212;
+    color: #f0f0f0;
+}
+
+body.dark-mode nav a {
+    color: #ddd;
+}
+
+body.dark-mode .weather-card {
+    background: rgba(30,30,30,0.9);
+    color: #f0f0f0;
+    border-color: #333;
+}
+
   
